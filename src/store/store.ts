@@ -1,11 +1,13 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
-import users from './reducers/slices/UsersSlice';
-import posts from './reducers/slices/PostsSlice';
+import users from "./reducers/slices/UsersSlice";
+import posts from "./reducers/slices/PostsSlice";
+import albums from "./reducers/slices/AlbumSlice";
 
 const rootReducer = combineReducers({
-    users,
-    posts
+  users,
+  posts,
+  albums,
 });
 
 export const setupStore = () => {

@@ -1,33 +1,38 @@
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { JSON_API } from "../../libs/constants";
-import { AppDispatch } from "../store";
-import { albumsSlice } from "./slices/AlbumSlice";
-import { postsSlice } from "./slices/PostsSlice";
-import { userSlice } from "./slices/UsersSlice";
+import { setAlbums } from "./slices/AlbumSlice";
+import { getPostsSuccess } from "./slices/PostsSlice";
+import { setUsers, setSelectedUser } from "./slices/UsersSlice";
 
-export const getUsers = () => async (dispatch: AppDispatch) => {
-  try {
-    const response = await axios.get(`${JSON_API}/users`)
-    dispatch(userSlice.actions.getUsersSuccess(response.data))
-  } catch (e) {
-    dispatch(userSlice.actions.getUsersError((e as Error).message))
+export const getUsers = createAsyncThunk(
+  "users/getUsers",
+  async (_, { dispatch }) => {
+    const response = await axios.get(`${JSON_API}/users`);
+    dispatch(setUsers(response.data));
   }
-};
+);
 
-export const getPosts = (userId: number) => async (dispatch: AppDispatch) => {
-  try {
-    const response = await axios.get(`${JSON_API}/posts?userId=${userId}`)
-    dispatch(postsSlice.actions.getPostsSuccess(response.data))
-  } catch (e) {
-    dispatch(postsSlice.actions.getPostsError((e as Error).message))
+export const getPosts = createAsyncThunk(
+  "posts/getPosts",
+  async (userId: number, { dispatch }) => {
+    const response = await axios.get(`${JSON_API}/posts?userId=${userId}`);
+    dispatch(getPostsSuccess(response.data));
   }
-};
+);
 
-export const getAlbums = (userId: number) => async (dispatch: AppDispatch) => {
-  try {
-    const response = await axios.get(`${JSON_API}/albums/userId=${userId}`)
-    dispatch(albumsSlice.actions.getAlbumsSuccess(response.data))
-  } catch (e) {
-    dispatch(albumsSlice.actions.getAlbumsError((e as Error).message))
+export const getSelectedUser = createAsyncThunk(
+  "users/getSelectedUser",
+  async (userId: number, { dispatch }) => {
+    const response = await axios.get(`${JSON_API}/users?id=${userId}`);
+    dispatch(setSelectedUser(response.data[0]));
   }
-};
+);
+
+export const getAlbums = createAsyncThunk(
+  "albums/getAlbums",
+  async (userId: number, { dispatch }) => {
+    const response = await axios.get(`${JSON_API}/albums?userId=${userId}`);
+    dispatch(setAlbums(response.data));
+  }
+);
